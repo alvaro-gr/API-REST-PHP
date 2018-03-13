@@ -6,7 +6,7 @@ require 'vendor/autoload.php';
 
 $app = new \Slim\Slim();
 
-$db = new mysqli('localhost','root','procamer','angular');
+$db = new mysqli('localhost','','','angular');
 
   if ($db->connect_error){
     echo "Error al conectar con la BD";
