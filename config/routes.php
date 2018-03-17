@@ -7,6 +7,16 @@ require 'config/db.php';
 
 $app = new \Slim\Slim();
 
+//Configuración de cabeceras
+header('Access-Control-Allow-Origin: *');
+header("Access-Control-Allow-Headers: X-API-KEY, Origin, X-Requested-With, Content-Type, Accept, Access-Control-Request-Method");
+header("Access-Control-Allow-Methods: GET, POST, OPTIONS, PUT, DELETE");
+header("Allow: GET, POST, OPTIONS, PUT, DELETE");
+$method = $_SERVER['REQUEST_METHOD'];
+if($method == "OPTIONS") {
+	die();
+}
+
 //Insertar un producto
 $app->post('/productos/add', function() use($app, $db){
       $json = $app->request->post('json');
@@ -107,7 +117,7 @@ $app->post('/productos/one', function() use($app, $db){
 });
 
 
-//Listar un producto
+//Eliminar un producto
 $app->post('/productos/delete', function() use($app, $db){
       $json = $app->request->post('json');
       $data = json_decode($json, true);
@@ -167,6 +177,39 @@ $app->post('/productos/update', function() use($app, $db){
 });
 
 //Subir una imagen a un producto
+$app->post('/productos/upload-image', function() use($app, $db){
 
+    $imagestype = array('image/jpg','image/png','image/gif');
 
- ?>
+    $result = array(
+      'status' => 'no',
+      'code' => 404,
+      'data' => 'No se ha subido la imagen'
+    );
+
+    if(isset($_FILES['data'])){
+        $piramideUploades = new PiramideUploader();
+        $upload = $piramideUploades->upload('image','data','uploads',$imagestype);
+        $file = $piramideUploades->getInfoFile();
+        $file_name = $file['complete_name'];
+
+        if (isset($upload) && $upload['uploaded']==false){
+            $result = array(
+              'status' => 'no',
+              'code' => 404,
+              'data' => 'No se ha subido la imagen'
+          );
+        } else {
+            $result = array(
+              'status' => 'ok',
+              'code' => 200,
+              'data' => 'Se ha subido la imagen'
+            );
+        }
+    }
+
+    echo json_encode($result); //Devolvemos un JSON
+
+});
+
+?>

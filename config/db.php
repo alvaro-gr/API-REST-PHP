@@ -3,7 +3,7 @@
   $host = 'localhost';
   $user = '';
   $password = '';
-  $dbname = 'my-db';
+  $dbname = 'angular';
 
   $db = new mysqli($host,$user,$password,$dbname);
 
